@@ -3,6 +3,8 @@ package com.mike.datetimeformatter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -42,32 +44,37 @@ public class DateTimeUtils {
      */
     private static Calendar parseDate(String rawResponseDate, String timeZone) throws ParseException {
 
-        SimpleDateFormat simpleDateFormat = null;
-        String iso_format = null;
+    	String[] formats = new String[] {
+    			   "yyyy-MM-dd",
+    			   "yyyy-MM-dd HH:mm",
+    			   "yyyy-MM-dd HH:mmZ",
+    			   "yyyy-MM-dd HH:mm:ss.SSSZ",
+    			   "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+    			 };
 
-        for (String format : ISO) {
+    	Calendar startDate = null;
+    	for(String format : formats){
+    		
+    		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.US);
+    		simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TIME_ZONE));
+    		
+            try{
+            	startDate = Calendar.getInstance();
+                startDate.setTime(simpleDateFormat.parse(rawResponseDate));
+                startDate.setTimeZone(TimeZone.getTimeZone(timeZone));
+                Log.e(DateTimeUtils.class.getSimpleName(),"Date Parsed !!");
+                return startDate;
 
-            simpleDateFormat = new SimpleDateFormat(format, Locale.US);
-            iso_format = format;
-
-        }
-
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TIME_ZONE));
-        Calendar startDate = null;
-
-        try {
-
-            startDate = Calendar.getInstance();
-            startDate.setTime(simpleDateFormat.parse(rawResponseDate));
-            startDate.setTimeZone(TimeZone.getTimeZone(timeZone));
-            return startDate;
-
-        } catch (ParseException e) {
-            Log.e(DateTimeUtils.class.getSimpleName(), "Failed to parse response date : "
-                    + rawResponseDate + "..." + "with DATE_FORMAT : " + iso_format);
-            throw e;
-        }
-
+            }catch (ParseException e){
+                Log.e(DateTimeUtils.class.getSimpleName(),"Failed to parse response date : "
+                        + rawResponseDate + "..." + "with DATE_FORMAT : " + DATE_FORMAT);
+                throw e;
+            }
+    		
+    	}
+    	
+    	return startDate;
+    	
     }
 
     public static String formatDate(String rawResponseDate, FormatType.TimeFormats formatType, String timeZone){
