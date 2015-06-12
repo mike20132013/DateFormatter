@@ -1,6 +1,10 @@
 # DateTimeFormatter
 
-##Formats the time requested based on the provided annotations in the library and Returns the desired output based on the options available.##
+###Formats the time requested based on the provided annotations in the library and Returns the desired output based on the options available.###
+
+###Sample View####
+
+<img src="https://raw.github.com/mike20132013/DateFormatter/master/DateTimeFormatter/sample.png" width="480" height="720" />
 
 ###Usage: Simple and Easy###
 
